@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: University API Gateway
+  version: "1.0.0"
+  description: Gateway for Tasks, Works and Analytics services
+paths:
+  /tasks:
+    get:
+      summary: Get all tasks
+      responses:
+        "200":
+          description: List of tasks
+    post:
+      summary: Create a new task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                description: { type: string }
+              required: [name, description]
+      responses:
+        "201":
+          description: Created task
+  /tasks/{id}:
+    get:
+      summary: Get task by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200": { description: Task }
+        "404": { description: Not found }
+    delete:
+      summary: Delete task
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "204": { description: Deleted }
+        "404": { description: Not found }
+
+  /works:
+    get:
+      summary: Get works
+      parameters:
+        - name: taskId
+          in: query
+          required: false
+          schema: { type: integer }
+        - name: firstName
+          in: query
+          required: false
+          schema: { type: string }
+        - name: lastName
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        "200": { description: List of works }
+    post:
+      summary: Submit work
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                taskId: { type: integer }
+                firstName: { type: string }
+                lastName: { type: string }
+                file:
+                  type: string
+                  format: binary
+              required: [taskId, firstName, lastName, file]
+      responses:
+        "201": { description: Created work }
+
+  /works/{id}:
+    get:
+      summary: Get work by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200": { description: Work }
+        "404": { description: Not found }
+
+  /works/{id}/reports:
+    get:
+      summary: Get plagiarism report for a work
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer }
+      responses:
+        "200": { description: Report }
+
+  /reports/plagiarism:
+    get:
+      summary: Get all plagiarism pairs
+      responses:
+        "200": { description: List of plagiarism pairs }

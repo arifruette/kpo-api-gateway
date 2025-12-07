@@ -1,0 +1,118 @@
+version: "3.9"
+
+services:
+  tasks-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: tasks
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - tasks_db_data:/var/lib/postgresql/data
+    networks:
+      task-net:
+        aliases:
+          - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tasks"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  tasks-service:
+    image: arifruette/task-service:0.0.2
+    depends_on:
+      tasks-db:
+        condition: service_healthy
+    networks:
+      task-net:
+        aliases:
+          - tasks-service
+
+  works-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: workdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - works_db_data:/var/lib/postgresql/data
+    networks:
+      work-net:
+        aliases:
+          - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d workdb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  works-service:
+    image: arifruette/work-service:0.0.1
+    depends_on:
+      works-db:
+        condition: service_healthy
+    volumes:
+      - works_uploads:/data/uploads
+    networks:
+      work-net:
+        aliases:
+          - works-service
+
+  analytics-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: analytics
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - analytics_db_data:/var/lib/postgresql/data
+    networks:
+      analysis-net:
+        aliases:
+          - db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d analytics"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  analytics-service:
+    image: arifruette/analytics-service:0.0.1
+    depends_on:
+      analytics-db:
+        condition: service_healthy
+      works-service:
+        condition: service_started
+    networks:
+      analysis-net:
+        aliases:
+          - analytics-service
+      work-net: {}
+
+  api-gateway:
+    build: .
+    depends_on:
+      tasks-service:
+        condition: service_started
+      works-service:
+        condition: service_started
+      analytics-service:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    networks:
+      task-net: {}
+      work-net: {}
+      analysis-net: {}
+
+volumes:
+  tasks_db_data:
+  works_db_data:
+  analytics_db_data:
+  works_uploads:
+
+networks:
+  task-net:
+  work-net:
+  analysis-net:

@@ -1,0 +1,15 @@
+ktor:
+  deployment:
+    port: 8080
+
+  application:
+    modules:
+      - ApplicationKt.module
+
+services:
+  tasks:
+    baseUrl: "http://tasks-service:8080"
+  works:
+    baseUrl: "http://works-service:8080"
+  analysis:
+    baseUrl: "http://analytics-service:8080"
