@@ -3,15 +3,18 @@ info:
   title: University API Gateway
   version: "1.0.0"
   description: Gateway for Tasks, Works and Analytics services
+
 paths:
   /tasks:
     get:
       summary: Get all tasks
+      description: Получить список всех заданий.
       responses:
         "200":
-          description: List of tasks
+          description: Список заданий.
     post:
       summary: Create a new task
+      description: Создать новое задание.
       requestBody:
         required: true
         content:
@@ -19,54 +22,57 @@ paths:
             schema:
               type: object
               properties:
-                name: { type: string }
-                description: { type: string }
+                name:
+                  type: string
+                description:
+                  type: string
               required: [name, description]
       responses:
         "201":
-          description: Created task
+          description: Задание успешно создано.
+
   /tasks/{id}:
     get:
       summary: Get task by id
+      description: Получить информацию о задании по его идентификатору.
       parameters:
         - name: id
           in: path
           required: true
-          schema: { type: integer }
+          schema:
+            type: integer
       responses:
-        "200": { description: Task }
-        "404": { description: Not found }
-    delete:
-      summary: Delete task
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: integer }
-      responses:
-        "204": { description: Deleted }
-        "404": { description: Not found }
+        "200":
+          description: Задание найдено.
+        "404":
+          description: Задание не найдено.
 
   /works:
     get:
       summary: Get works
+      description: Получить список работ с возможностью фильтрации по заданию или студенту.
       parameters:
         - name: taskId
           in: query
           required: false
-          schema: { type: integer }
+          schema:
+            type: integer
         - name: firstName
           in: query
           required: false
-          schema: { type: string }
+          schema:
+            type: string
         - name: lastName
           in: query
           required: false
-          schema: { type: string }
+          schema:
+            type: string
       responses:
-        "200": { description: List of works }
+        "200":
+          description: Список работ.
     post:
       summary: Submit work
+      description: Отправить работу на проверку с прикреплённым файлом.
       requestBody:
         required: true
         content:
@@ -74,41 +80,78 @@ paths:
             schema:
               type: object
               properties:
-                taskId: { type: integer }
-                firstName: { type: string }
-                lastName: { type: string }
+                taskId:
+                  type: integer
+                firstName:
+                  type: string
+                lastName:
+                  type: string
                 file:
                   type: string
                   format: binary
               required: [taskId, firstName, lastName, file]
       responses:
-        "201": { description: Created work }
+        "201":
+          description: Работа успешно загружена.
 
   /works/{id}:
     get:
       summary: Get work by id
+      description: Получить информацию о конкретной работе по её идентификатору.
       parameters:
         - name: id
           in: path
           required: true
-          schema: { type: integer }
+          schema:
+            type: integer
       responses:
-        "200": { description: Work }
-        "404": { description: Not found }
+        "200":
+          description: Работа найдена.
+        "404":
+          description: Работа не найдена.
 
   /works/{id}/reports:
     get:
       summary: Get plagiarism report for a work
+      description: Получить отчёт о плагиате для указанной работы.
       parameters:
         - name: id
           in: path
           required: true
-          schema: { type: integer }
+          schema:
+            type: integer
       responses:
-        "200": { description: Report }
+        "200":
+          description: Отчёт о плагиате для работы.
+
+  /works/{id}/wordcloud:
+    get:
+      summary: Get word cloud image for a work
+      description: Сгенерировать и получить изображение облака слов для указанной работы.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Изображение облака слов (PNG).
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+        "400":
+          description: Невозможно сгенерировать облако слов (например, пустой текст работы).
+        "404":
+          description: Работа не найдена.
+
 
   /reports/plagiarism:
     get:
       summary: Get all plagiarism pairs
+      description: Получить список всех найденных случаев плагиата между работами.
       responses:
-        "200": { description: List of plagiarism pairs }
+        "200":
+          description: Список пар работ, помеченных как плагиат.

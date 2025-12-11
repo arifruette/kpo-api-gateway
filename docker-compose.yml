@@ -14,7 +14,7 @@ services:
         aliases:
           - db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d tasks"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d tasks" ]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -42,7 +42,7 @@ services:
         aliases:
           - db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d workdb"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d workdb" ]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -72,7 +72,7 @@ services:
         aliases:
           - db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d analytics"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d analytics" ]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -88,9 +88,10 @@ services:
       analysis-net:
         aliases:
           - analytics-service
-      work-net: {}
+      work-net: { }
     volumes:
       - works_uploads:/data/uploads:ro
+      - wordclouds:/data/wordclouds
 
   api-gateway:
     build: .
@@ -104,15 +105,18 @@ services:
     ports:
       - "8080:8080"
     networks:
-      task-net: {}
-      work-net: {}
-      analysis-net: {}
+      task-net: { }
+      work-net: { }
+      analysis-net: { }
+    volumes:
+      - wordclouds:/data/wordclouds
 
 volumes:
   tasks_db_data:
   works_db_data:
   analytics_db_data:
   works_uploads:
+  wordclouds:
 
 networks:
   task-net:

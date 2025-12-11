@@ -9,6 +9,8 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.http.*
+import io.ktor.server.http.content.files
+import io.ktor.server.http.content.static
 import kotlinx.serialization.json.Json
 import java.net.ConnectException
 import io.ktor.server.plugins.swagger.*
@@ -23,6 +25,13 @@ data class ServiceConfig(
 )
 
 fun Application.module() {
+
+    routing {
+        static("/static") {
+            files("/data/wordclouds")
+        }
+    }
+
 
     val config = environment.config
 

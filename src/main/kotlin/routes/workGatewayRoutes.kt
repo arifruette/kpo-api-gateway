@@ -104,5 +104,11 @@ fun Route.workGatewayRoutes(
             val target = "${services.worksBaseUrl}/works/$id"
             proxyGet(client, target, call)
         }
+
+        get("{id}/wordcloud") {
+            val id = call.parameters["id"]!!
+            val target = "${services.analysisBaseUrl}/works/$id/wordcloud"
+            proxyGet(client, target, call)
+        }
     }
 }
