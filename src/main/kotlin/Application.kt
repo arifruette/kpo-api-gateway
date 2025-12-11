@@ -13,6 +13,7 @@ import kotlinx.serialization.json.Json
 import java.net.ConnectException
 import io.ktor.server.plugins.swagger.*
 import routes.taskGatewayRoutes
+import routes.workGatewayRoutes
 
 data class ServiceConfig(
     val tasksBaseUrl: String,
@@ -73,6 +74,7 @@ fun Application.module() {
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yml")
 
         taskGatewayRoutes(client, services)
+        workGatewayRoutes(client, services)
 
         get("/") {
             call.respondRedirect("/swagger")
