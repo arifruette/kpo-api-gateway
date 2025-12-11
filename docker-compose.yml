@@ -89,6 +89,8 @@ services:
         aliases:
           - analytics-service
       work-net: {}
+    volumes:
+      - works_uploads:/data/uploads:ro
 
   api-gateway:
     build: .

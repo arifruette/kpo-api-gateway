@@ -66,3 +66,16 @@ suspend fun proxyPostJson(
     val body = response.bodyAsText()
     call.respond(response.status, TextContent(body, respContentType))
 }
+
+suspend fun proxyPostNoBody(
+    client: HttpClient,
+    targetUrl: String,
+    call: ApplicationCall
+) {
+    val response: HttpResponse = client.post(targetUrl)
+
+    val contentType = response.headers[HttpHeaders.ContentType]?.let { ContentType.parse(it) }
+        ?: ContentType.Application.Json
+    val body = response.bodyAsText()
+    call.respond(response.status, TextContent(body, contentType))
+}

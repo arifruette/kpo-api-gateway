@@ -12,6 +12,7 @@ import io.ktor.http.*
 import kotlinx.serialization.json.Json
 import java.net.ConnectException
 import io.ktor.server.plugins.swagger.*
+import routes.analysisGatewayRoutes
 import routes.taskGatewayRoutes
 import routes.workGatewayRoutes
 
@@ -75,6 +76,7 @@ fun Application.module() {
 
         taskGatewayRoutes(client, services)
         workGatewayRoutes(client, services)
+        analysisGatewayRoutes(client, services)
 
         get("/") {
             call.respondRedirect("/swagger")
