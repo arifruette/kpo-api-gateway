@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: University API Gateway
+  title: Tasks and works api gateway
   version: "1.0.0"
   description: Gateway for Tasks, Works and Analytics services
 
